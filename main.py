@@ -21,13 +21,21 @@ def parse_args():
     parser.add_argument("--home_only", action="store_true", help="Only include games where team is home")
     parser.add_argument("--away_only", action="store_true", help="Only include games where team is away")
     parser.add_argument("--output_dir", type=str, default="output", help="Directory to save outputs")
-    parser.add_argument("--league_id", type=int, default=103, help="League ID (e.g. 103 = AL, 104 = NL)")
-    parser.add_argument("--sport_id", type=int, default=1, help="Sport ID (default 1 = MLB)")
+    parser.add_argument("--league_id", type=int, default=103, help="League ID (e.g. 103 = AL, 104 = NL, 131 = LIDOM)")
+    parser.add_argument("--sport_id", type=int, default=None, help="Sport ID (1 = MLB, 17 = baseball/other leagues)")
     return parser.parse_args()
 
 def main():
     logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
     args = parse_args()
+    
+    # Auto-set sport_id based on league_id if not specified
+    if args.sport_id is None:
+        if args.league_id in [103, 104]:  # MLB leagues
+            args.sport_id = 1
+        else:  # Non-MLB leagues (LIDOM, LIDOM, etc.)
+            args.sport_id = 17
+        logging.info(f"Auto-set sport_id to {args.sport_id} based on league_id {args.league_id}")
 
     Path(args.output_dir).mkdir(exist_ok=True)
 
