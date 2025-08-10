@@ -71,3 +71,4 @@ Thumbs.db
 
 output/
 __pycache__/fetch.cpython-310.pyc
+*.csv
